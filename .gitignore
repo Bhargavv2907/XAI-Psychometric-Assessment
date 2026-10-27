@@ -1,0 +1,29 @@
+# Data files (Do not commit raw participant dataset to git)
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+*.zip
+*.csv
+*.tsv
+
+# Python bytecode & cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+venv/
+env/
+.venv/
+
+# Outputs (generated plots can be regenerated)
+outputs/figures/*.png
+outputs/shap/*.png
+outputs/lime/*.png
+outputs/lime/*.html
+
+# OS and IDE files
+.DS_Store
+.idea/
+.vscode/

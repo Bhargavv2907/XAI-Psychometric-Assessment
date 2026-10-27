@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assessment – XAI Psychometric</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+<header>
+    <h1>Psychometric Assessment</h1>
+</header>
+<main>
+    <section>
+        <form method="POST" action="{{ url_for('assessment') }}">
+            {% for col, label in items %}
+                <label for="{{ col }}">{{ label }}</label>
+                <input type="number" id="{{ col }}" name="{{ col }}" min="0" max="3" step="1" required />
+            {% endfor %}
+            <button type="submit" class="btn" style="margin-top:1.5rem;">Submit Assessment</button>
+        </form>
+    </section>
+</main>
+<footer>
+    <p>© 2026 University Research Project – Academic Prototype Only</p>
+</footer>
+</body>
+</html>

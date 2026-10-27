@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Explainable AI Framework for Psychometric Assessment</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+    <header>
+        <h1>Explainable AI Framework for Psychometric Assessment</h1>
+    </header>
+    <main>
+        <section class="intro">
+            <p>This research prototype demonstrates how modern XAI techniques can explain AI‑based psychometric assessments.</p>
+            <h2>Why Explainability?</h2>
+            <p>In mental‑health screening, clinicians need to understand which questionnaire items drove a risk prediction.</p>
+            <h2>Research Objectives</h2>
+            <ol>
+                <li>Develop an XAI framework for psychometric assessment.</li>
+                <li>Compare six explainability methods (SHAP, LIME, Integrated Gradients, Grad‑CAM, Attention, Counterfactual).</li>
+                <li>Prototype multimodal explainability (future work).</li>
+            </ol>
+            <h2>Explainability Techniques Overview</h2>
+            <ul class="tech-list">
+                <li>SHAP – game‑theoretic global & local importance.</li>
+                <li>LIME – locally interpretable model‑agnostic explanations.</li>
+                <li>Integrated Gradients – path‑integrated gradients for neural nets.</li>
+                <li>Grad‑CAM – visual activation maps for convolutional models.</li>
+                <li>Attention‑based – self‑attention weight inspection.</li>
+                <li>Counterfactual – minimal changes to flip the prediction.</li>
+            </ul>
+            <div class="cta">
+                <a class="btn" href="{{ url_for('assessment') }}">Start Assessment</a>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>© 2026 University Research Project – Academic Prototype Only</p>
+    </footer>
+</body>
+</html>

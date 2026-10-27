@@ -1,0 +1,238 @@
+import json
+import os
+
+notebook = {
+    "cells": [
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+                "# Explainable AI (XAI) Framework for Psychometric Assessment\n",
+                "## Empirical Research Foundation on DASS-42\n",
+                "\n",
+                "This research notebook presents a comprehensive **Explainable AI Framework** for psychometric assessment and mental health screening built upon empirical responses from the **Depression Anxiety Stress Scales (DASS-42)** ($N = 34,576$ validated participants).\n",
+                "\n",
+                "### Core Project Objectives Achieved:\n",
+                "1. **Task 1: End-to-End XAI Framework**: Full integration of machine learning and neural architectures with state-of-the-art explainability methods.\n",
+                "2. **Task 2: 6 Explainability Techniques & Comparative Evaluation**:\n",
+                "   - **SHAP** (Shapley Additive exPlanations)\n",
+                "   - **LIME** (Local Interpretable Model-agnostic Explanations)\n",
+                "   - **Integrated Gradients** (Axiomatic path integrals)\n",
+                "   - **Grad-CAM** (1D Convolutional class activation mapping)\n",
+                "   - **Attention-Based Explanations** (Transformer multi-head self-attention)\n",
+                "   - **Counterfactual Recourse** (Actionable clinical intervention search)\n",
+                "   - **Quantitative Comparison Benchmark** (Faithfulness, Gini Sparsity, Concordance)\n",
+                "3. **Task 3: Multimodal Psychometric Fusion & Explainability**:\n",
+                "   - Synchronized fusion of 5 clinical streams: Survey Responses, Behavioural Timings, Clinical Text Narratives, Speech Acoustics, and Physiological Signals."
+            ]
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+                "### 1. Environment Setup and Data Loading\n",
+                "We begin by importing required packages and loading the official Open Source Psychometrics DASS-42 dataset."
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": None,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "import os\n",
+                "import sys\n",
+                "sys.path.insert(0, os.path.abspath('..'))\n",
+                "\n",
+                "import numpy as np\n",
+                "import pandas as pd\n",
+                "import matplotlib.pyplot as plt\n",
+                "import seaborn as sns\n",
+                "\n",
+                "from src.data.loader import download_and_load_data, inspect_dataset\n",
+                "from src.data.preprocessing import preprocess_data\n",
+                "\n",
+                "# Load and clean empirical research dataset\n",
+                "df_clean = download_and_load_data(raw_dir='../data/raw')\n",
+                "stats = inspect_dataset(df_clean)"
+            ]
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+                "### 2. Psychometric Preprocessing and Stratified Split\n",
+                "Map raw survey items to human-readable psychological labels and partition into stratified train/test sets."
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": None,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "X_train, X_test, y_train, y_test, feature_names = preprocess_data(\n",
+                "    df_clean, test_size=0.2, random_state=42\n",
+                ")\n",
+                "print(f\"Training instances: {len(X_train):,} | Test instances: {len(X_test):,}\")\n",
+                "print(f\"Predictor feature dimensions: {len(feature_names)}\")"
+            ]
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+                "### 3. Model Training & Evaluation\n",
+                "Train baseline classifier and evaluate classification metrics (ROC-AUC, F1, Confusion Matrix)."
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": None,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "from src.models.baseline_model import train_baseline_model\n",
+                "from src.evaluation.metrics import evaluate_model\n",
+                "\n",
+                "model = train_baseline_model(X_train, y_train, model_type='random_forest', random_state=42)\n",
+                "eval_metrics = evaluate_model(model, X_test, y_test, output_dir='../outputs/figures')"
+            ]
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+                "### 4. Explainability Techniques (Task 1 & Task 2)\n",
+                "We now execute each of the 6 explainability techniques for a representative participant."
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": None,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "from src.explainers.shap_explainer import generate_shap_explanations\n",
+                "from src.explainers.lime_explainer import generate_lime_explanations\n",
+                "from src.explainers.integrated_gradients import generate_integrated_gradients_explanations\n",
+                "from src.explainers.grad_cam import generate_gradcam_explanations\n",
+                "from src.explainers.attention_explainer import generate_attention_explanations\n",
+                "from src.explainers.counterfactual import generate_counterfactual_explanations\n",
+                "\n",
+                "sample_idx = 0\n",
+                "\n",
+                "# 1. SHAP\n",
+                "shap_res = generate_shap_explanations(model, X_train, X_test, feature_names, output_dir='../outputs/shap', sample_idx=sample_idx)\n",
+                "\n",
+                "# 2. LIME\n",
+                "lime_res = generate_lime_explanations(model, X_train, X_test, feature_names, output_dir='../outputs/lime', sample_idx=sample_idx)\n",
+                "\n",
+                "# 3. Integrated Gradients\n",
+                "ig_res = generate_integrated_gradients_explanations(model, X_train, X_test, feature_names, output_dir='../outputs/ig', sample_idx=sample_idx)\n",
+                "\n",
+                "# 4. Grad-CAM\n",
+                "cam_res = generate_gradcam_explanations(model, X_train, X_test, feature_names, output_dir='../outputs/gradcam', sample_idx=sample_idx)\n",
+                "\n",
+                "# 5. Attention Explanations\n",
+                "attn_res = generate_attention_explanations(model, X_train, X_test, feature_names, output_dir='../outputs/attention', sample_idx=sample_idx)\n",
+                "\n",
+                "# 6. Counterfactual Recourse\n",
+                "cf_res = generate_counterfactual_explanations(model, X_train, X_test, feature_names, output_dir='../outputs/counterfactual', sample_idx=sample_idx)"
+            ]
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+                "### 5. Task 3: Multimodal Psychometric Fusion & Explainability\n",
+                "Synchronize 5 modalities (Questionnaire, Timing Latency, Clinical Narrative Text, Speech Acoustics, and Autonomic Physiology) and train the attention-gated multimodal fusion network."
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": None,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "from src.multimodal.architecture import MultimodalXAIArchitecture\n",
+                "\n",
+                "multimodal_arch = MultimodalXAIArchitecture()\n",
+                "mm_results = multimodal_arch.run_pipeline(df_clean, sample_idx=sample_idx, output_dir='../outputs/multimodal')\n",
+                "print('Multimodal Predicted Risk:', mm_results['risk_prob'])\n",
+                "print('Modality Attention Weights:', mm_results['modality_weights_pct'])"
+            ]
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+                "### 6. Task 2: Quantitative Comparative Evaluation Across XAI Techniques\n",
+                "Benchmark Faithfulness (Area Under Deletion Curve), Gini Sparsity, Concordance (Spearman Rank Correlation), and Runtime."
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": None,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "from src.evaluation.xai_comparison import run_xai_comparison_benchmark\n",
+                "\n",
+                "benchmark_results = run_xai_comparison_benchmark(\n",
+                "    model, X_train, X_test, feature_names, output_dir='../outputs/comparison', sample_idx=sample_idx\n",
+                ")"
+            ]
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+                "### 7. Interactive Research Dashboard Generation\n",
+                "Finally, compile all calculated metrics, explainability plots, and interactive simulation widgets into a standalone HTML5 portal."
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": None,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "from src.dashboard.dashboard_generator import generate_interactive_dashboard\n",
+                "\n",
+                "dashboard_file = generate_interactive_dashboard(\n",
+                "    metrics=eval_metrics, sample_idx=sample_idx, output_path='../outputs/dashboard/index.html'\n",
+                ")\n",
+                "print(f'Interactive Portal generated at: {dashboard_file}')"
+            ]
+        }
+    ],
+    "metadata": {
+        "kernelspec": {
+            "display_name": "Python 3",
+            "language": "python",
+            "name": "python3"
+        },
+        "language_info": {
+            "codemirror_mode": {
+                "name": "ipython",
+                "version": 3
+            },
+            "file_extension": ".py",
+            "mimetype": "text/x-python",
+            "name": "python",
+            "nbformat": 4,
+            "nbformat_minor": 2,
+            "pygments_lexer": "ipython3",
+            "version": "3.13.0"
+        }
+    },
+    "nbformat": 4,
+    "nbformat_minor": 2
+}
+
+os.makedirs("c:/Users/bharg/OneDrive/Desktop/XAI/notebooks", exist_ok=True)
+with open("c:/Users/bharg/OneDrive/Desktop/XAI/notebooks/comprehensive_xai_framework.ipynb", "w", encoding="utf-8") as f:
+    json.dump(notebook, f, indent=2)
+
+print("Notebook generated successfully!")
